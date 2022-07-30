@@ -1,5 +1,6 @@
 package com.umc.coec.domain.join_post;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.user.User;
@@ -25,14 +26,11 @@ import java.time.LocalDateTime;
                         )
             }
 )
-public class JoinPost {
+public class JoinPost extends BaseTimeEntity  {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;

@@ -1,5 +1,6 @@
 package com.umc.coec.domain.sports;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Sports {
+public class Sports extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -24,8 +25,6 @@ public class Sports {
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @Comment("운동 종목")
     @Column(nullable = false)
