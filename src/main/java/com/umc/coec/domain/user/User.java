@@ -1,5 +1,6 @@
 package com.umc.coec.domain.user;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.enums.RoleType;
 import com.umc.coec.domain.enums.Status;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 //@Table(name = "user_table") //h2 db의 예약어로 User가 있기 때문에 h2 사용할때는 이 어노테이션 활성화
-public class User {
+public class User extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -30,8 +31,6 @@ public class User {
     @Comment("ACTIVE: 활성화,  INACTIVE: 비활성화,  DELETED: 탈퇴")
     private Status status=Status.ACTIVE;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @Column(nullable = false,unique = true)
     private String email;

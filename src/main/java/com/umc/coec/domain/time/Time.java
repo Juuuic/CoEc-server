@@ -1,5 +1,6 @@
 package com.umc.coec.domain.time;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Day;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
@@ -18,14 +19,12 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 //@Table(name = "time_table") //h2 db의 예약어로 Time이 있기 때문에 h2 사용할때는 이 어노테이션 활성화
-public class Time {
+public class Time extends BaseTimeEntity  {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
