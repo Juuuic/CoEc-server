@@ -1,7 +1,11 @@
 package com.umc.coec.controller;
 
+import com.umc.coec.config.auth.PrincipalDetails;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.skilled.Skilled;
+import com.umc.coec.domain.user.User;
+import com.umc.coec.dto.partner_post.DayandTime;
+import com.umc.coec.dto.partner_post.GetPartnerPostDto;
 import com.umc.coec.dto.partner_post.GetPartnerPostsDto;
 import com.umc.coec.service.PartnerPostService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +37,21 @@ public class PartnerPostsController {
         List<Post> posts = partnerPostService.selectPosts();
         List<GetPartnerPostsDto> getPartnerPostsDtos = new ArrayList<>();
         for (int i = 0; i < posts.size(); i++) {
-            Skilled skilled = partnerPostService.getSkilled(posts.get(i));
+            Skilled skilled = partnerPostService.selectSkilled(posts.get(i));
             GetPartnerPostsDto pDto = new GetPartnerPostsDto(posts.get(i), skilled);
             getPartnerPostsDtos.add(pDto);
         }
         return new ResponseEntity<>(getPartnerPostsDtos, HttpStatus.OK);
+    }
+
+    // 게시물 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<GetPartnerPostDto> getPost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Post post = partnerPostService.selectPost(postId);
+        Skilled skilled = partnerPostService.selectSkilled(post);
+        GetPartnerPostDto getPartnerPostDto = new GetPartnerPostDto(post, skilled);
+        getPartnerPostDto.setDayandTimes(partnerPostService.selectDayandTimes(post));
+        getPartnerPostDto.setLikeState(partnerPostService.selectLikeState(post, principalDetails));
+        return new ResponseEntity<>(getPartnerPostDto, HttpStatus.OK);
     }
 }

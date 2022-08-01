@@ -18,10 +18,10 @@ import java.util.List;
 public class GetPartnerPostsDto {
     private String sportsName;
     private int headCount;
-    private String siDo;
-    private String siGunGu;
-    private String eupMyunDongLi;
+    private String place;
     private int skilled;
+    private String nickname;
+    private String profileImgUrl;
     private List<String> purposes = new ArrayList<>();
     private int interest;
     private String status;
@@ -30,9 +30,9 @@ public class GetPartnerPostsDto {
     public GetPartnerPostsDto(Post post, Skilled skilled) {
         this.sportsName = post.getSports().getName();
         this.headCount = post.getHeadCount();
-        this.siDo = post.getLocation().getSiDo();
-        this.siGunGu = post.getLocation().getSiGunGu();
-        this.eupMyunDongLi = post.getLocation().getEupMyunDongLi();
+        this.place = post.getLocation().getEupMyunDongLi();
+        this.nickname = post.getUser().getNickname();
+        this.profileImgUrl = post.getUser().getProfileImgUrl();
         this.skilled = skilled.getSkilled();
         // 운동 목적 몇 개까지 보여줄지 논의 필요
         for (int i = 0; i < post.getPurposes().size(); i++)
