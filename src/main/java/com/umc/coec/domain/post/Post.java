@@ -62,7 +62,7 @@ public class Post extends BaseTimeEntity  {
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "locationId")
+    @JoinColumn(name = "locationId", nullable = false)
     private Location location;
 
     @Comment("구하는 사람 수")
