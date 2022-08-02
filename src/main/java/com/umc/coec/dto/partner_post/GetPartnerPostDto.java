@@ -11,6 +11,7 @@ import org.hibernate.annotations.Comment;
 
 import javax.persistence.Column;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class GetPartnerPostDto {
     private String nickname;
     private String profileImgUrl;
     private List<String> purposes = new ArrayList<>();
+    private LocalDate updatedAt;
     private String sportsName;
 
     private int headCount;
@@ -29,22 +31,22 @@ public class GetPartnerPostDto {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    @Comment("요일별 시간")
+
+    // 요일별 시간
     private List<DayandTime> dayandTimes;
 
     private int skilled;
     private int year;
     private int month;
-    @Column(length = 1000)
     private String experience;
 
     private int ageWanted;
     private Gender genderWanted;
 
-    @Column(length = 1000)
     private String contents;
     private int interest;
-    @Comment("관심 클릭 여부")
+
+    // 관심 클릭 여부
     private Boolean likeState;
 
     private String status;
@@ -55,6 +57,7 @@ public class GetPartnerPostDto {
         this.profileImgUrl = post.getUser().getProfileImgUrl();
         for (int i = 0; i < post.getPurposes().size(); i++)
             this.purposes.add(post.getPurposes().get(i).getContents());
+        this.updatedAt = LocalDate.from(post.getUpdatedAt());
         this.sportsName = post.getSports().getName();
         this.headCount = post.getHeadCount();
         this.place = post.getLocation().getEupMyunDongLi();

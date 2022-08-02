@@ -10,8 +10,8 @@ import java.util.List;
 
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    // 9개만 받아와야 하는 코드 추가 필요 (페이징하려면 아예 새로 만들어 할 수도)
-    @Query("select p from Post p where p.status != 'DELETED' and p.division = 'PARTNER'")
+    // 페이징하려면 아예 새로 만들어 할 수도
+    @Query(nativeQuery = true, value = "select * from Post p where p.status != 'DELETED' and p.division = 'PARTNER' order by p.updatedAt desc limit 9")
     public List<Post> findPartnerPosts();
 
     @Query("select s from Skilled s where s.sports.id = :sportsId and s.user.id = :userId")
