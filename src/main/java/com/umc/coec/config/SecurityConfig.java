@@ -33,7 +33,7 @@ public class SecurityConfig {
 
             http
                         .authorizeRequests()
-                        .antMatchers("/api/v1/posts/**","/api/vi/chat/**").authenticated()
+                        //.antMatchers("/api/v1/posts/**","/api/vi/chat/**").authenticated()
                         .anyRequest().permitAll();
             http
                         .formLogin()

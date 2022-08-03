@@ -7,6 +7,7 @@ import com.umc.coec.domain.user.User;
 import com.umc.coec.dto.partner_post.DayandTime;
 import com.umc.coec.dto.partner_post.GetPartnerPostDto;
 import com.umc.coec.dto.partner_post.GetPartnerPostsDto;
+import com.umc.coec.dto.partner_post.PostPartnerPostDto;
 import com.umc.coec.service.PartnerPostService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -53,5 +54,13 @@ public class PartnerPostsController {
         getPartnerPostDto.setDayandTimes(partnerPostService.selectDayandTimes(post));
         getPartnerPostDto.setLikeState(partnerPostService.selectLikeState(post, principalDetails));
         return new ResponseEntity<>(getPartnerPostDto, HttpStatus.OK);
+    }
+
+    // 게시물 생성
+    @PostMapping("")
+    public ResponseEntity<?> createPost(@RequestBody PostPartnerPostDto postPartnerPostDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (partnerPostService.createPost(postPartnerPostDto/*, principalDetails.getId()*/))
+            return new ResponseEntity<>("등록이 완료되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity<>("등록에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

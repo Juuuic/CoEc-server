@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @Builder
 public class DayandTime {
     @Enumerated(EnumType.STRING)
-    private Day day;
+    private String day;
 
     @Comment("운동 시작 시간")
     private LocalTime startTime;

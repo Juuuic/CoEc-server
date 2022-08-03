@@ -26,7 +26,7 @@ public class Skilled extends BaseTimeEntity  {
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sportsId")
     private Sports sports;
 
