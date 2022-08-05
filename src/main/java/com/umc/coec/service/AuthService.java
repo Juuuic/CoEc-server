@@ -1,6 +1,5 @@
 package com.umc.coec.service;
 
-import com.umc.coec.domain.enums.RoleType;
 import com.umc.coec.domain.user.User;
 import com.umc.coec.domain.user.UserRepository;
 import com.umc.coec.dto.auth.EmailDupCheckDto;
