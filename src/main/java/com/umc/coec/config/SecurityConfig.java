@@ -31,10 +31,10 @@ public class SecurityConfig {
             http
                         .csrf().disable();
 
-            //http
-                        //.authorizeRequests()
-                        //.antMatchers("/api/v1/posts/**","/api/vi/chat/**").authenticated()
-                        //.anyRequest().permitAll();
+            http
+                        .authorizeRequests()
+                        .anyRequest().permitAll();
+//                        .antMatchers("/api/v1/posts/**","/api/v1/chat/**").authenticated()
             http
                         .formLogin()
                         .loginProcessingUrl("/api/v1/auth/login")

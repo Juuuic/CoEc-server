@@ -1,5 +1,6 @@
 package com.umc.coec.domain.post;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Division;
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.enums.Status;
@@ -28,7 +29,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Post {
+public class Post extends BaseTimeEntity  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -36,8 +37,6 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
 
     @Comment("등록 글 구분: 파트너 매칭/ 멘토 /멘티")
@@ -64,7 +63,7 @@ public class Post {
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "locationId")
+    @JoinColumn(name = "locationId", nullable = false)
     private Location location;
 
     @Comment("구하는 사람 수")

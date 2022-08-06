@@ -1,5 +1,6 @@
 package com.umc.coec.domain.skilled;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.user.User;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Skilled {
+public class Skilled extends BaseTimeEntity  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -25,10 +26,7 @@ public class Skilled {
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sportsId")
     private Sports sports;
 

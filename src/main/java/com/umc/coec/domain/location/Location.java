@@ -1,5 +1,6 @@
 package com.umc.coec.domain.location;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Location {
+public class Location extends BaseTimeEntity  {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -24,8 +25,6 @@ public class Location {
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     private BigDecimal latitude;
     private BigDecimal longitude;

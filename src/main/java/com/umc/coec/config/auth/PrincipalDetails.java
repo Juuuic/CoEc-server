@@ -54,7 +54,6 @@ public class PrincipalDetails implements UserDetails {
             return user.getIsEnabled();
       }
 
-
       public Long getId() {
             return user.getId();
       }

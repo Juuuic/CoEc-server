@@ -1,5 +1,6 @@
 package com.umc.coec.domain.report;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Category;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
@@ -17,16 +18,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Report {
+public class Report extends BaseTimeEntity  {
 
       @GeneratedValue(strategy = GenerationType.IDENTITY)
       @Id
       private Long id;
 
       private Status status=Status.ACTIVE;
-
-      private LocalDateTime createdAt;
-      private LocalDateTime updatedAt;
 
       @JoinColumn(name="userId")
       @ManyToOne(fetch = FetchType.EAGER)

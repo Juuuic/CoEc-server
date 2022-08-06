@@ -1,5 +1,6 @@
 package com.umc.coec.domain.chat;
 
+import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.chat_room.ChatRoom;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.user.User;
@@ -16,14 +17,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Chat {
+public class Chat extends BaseTimeEntity {
 
       @GeneratedValue(strategy = GenerationType.IDENTITY)
       @Id
       private Long id;
-
-      private LocalDateTime createdAt;
-      private LocalDateTime updatedAt;
 
       private Status status=Status.ACTIVE;
 
