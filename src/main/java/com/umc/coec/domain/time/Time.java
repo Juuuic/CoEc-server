@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -33,11 +33,11 @@ public class Time extends BaseTimeEntity  {
     private Day day;
 
     @Comment("운동 시작 시간")
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
 
     @Comment( "운동 종료 시간")
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "postId")

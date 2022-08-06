@@ -49,7 +49,7 @@ public class Post extends BaseTimeEntity  {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sportsId")
     private Sports sports;
 
@@ -62,7 +62,7 @@ public class Post extends BaseTimeEntity  {
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "locationId")
+    @JoinColumn(name = "locationId", nullable = false)
     private Location location;
 
     @Comment("구하는 사람 수")
