@@ -11,15 +11,12 @@ import com.umc.coec.domain.purpose.Purpose;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.time.Time;
 import com.umc.coec.domain.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.umc.coec.dto.partner_post.UpdatePostReqDto;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +32,6 @@ public class Post extends BaseTimeEntity  {
 
     @Enumerated(EnumType.STRING)
     private Status status=Status.ACTIVE;
-
-
 
     @Comment("등록 글 구분: 파트너 매칭/ 멘토 /멘티")
     @Column
@@ -94,5 +89,34 @@ public class Post extends BaseTimeEntity  {
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "post")
     private List<Interest> interests = new ArrayList<>();
 
+    public void update(UpdatePostReqDto updatePostReqDto) {
+        int i;
 
+        sports.setName(updatePostReqDto.getSportsName());
+
+        this.setHeadCount(updatePostReqDto.getHeadCount());
+
+        location.setSiDo(updatePostReqDto.getSiDo());
+        location.setSiGunGu(updatePostReqDto.getSiGunGu());
+        location.setEupMyunDongLi(updatePostReqDto.getEupMyunDongLi());
+
+        this.setStartDate(updatePostReqDto.getStartDate());
+        this.setEndDate(updatePostReqDto.getEndDate());
+
+        this.setAgeWanted(updatePostReqDto.getAgeWanted());
+        this.setGenderWanted(updatePostReqDto.getGenderWanted());
+
+        this.setContents(updatePostReqDto.getContents());
+        this.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+
+        // 모집중 or 모집완료에 따라 status 변경
+        sports.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        location.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+
+        for (i = 0; i < joinPosts.size(); i++)
+            joinPosts.get(i).setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        // 일단 모집완료된 글에는 관심 못 누르게 설정
+        for (i = 0; i < interests.size(); i++)
+            interests.get(i).setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+    }
 }
