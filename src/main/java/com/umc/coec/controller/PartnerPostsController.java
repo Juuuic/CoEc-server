@@ -6,6 +6,7 @@ import com.umc.coec.domain.skilled.Skilled;
 import com.umc.coec.dto.partner_post.*;
 import com.umc.coec.service.PartnerPostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/posts/partners")
 public class PartnerPostsController {
 
-    private final Logger logger= LoggerFactory.getLogger(getClass());
 
     private final PartnerPostService partnerPostService;
 
