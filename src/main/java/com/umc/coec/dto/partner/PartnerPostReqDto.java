@@ -1,4 +1,4 @@
-package com.umc.coec.dto.partner_post;
+package com.umc.coec.dto.partner;
 
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.enums.Division;
@@ -9,6 +9,7 @@ import com.umc.coec.domain.purpose.Purpose;
 import com.umc.coec.domain.skilled.Skilled;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.time.Time;
+import com.umc.coec.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePostReqDto {
+public class PartnerPostReqDto {
     private String sportsName;
 
     private int headCount;
@@ -49,16 +50,18 @@ public class CreatePostReqDto {
 
     private List<String> purposes = new ArrayList<>();
 
-    public Post toPostEntity(/*User user*/) {
+    private String status;
+
+    public Post toPostEntity(User user) {
         Sports sports = new Sports();
         sports.setName(sportsName);
         Location location = new Location();
         location.setSiDo(siDo); location.setSiGunGu(siGunGu); location.setEupMyunDongLi(eupMyunDongLi);
 
         return Post.builder()
-                //.user(user)
+                .user(user)
                 .division(Division.PARTNER)
-                .status(Status.ACTIVE)
+                .status(status.equals("모집중") ? Status.ACTIVE : Status.INACTIVE)
                 .sports(sports)
                 .headCount(headCount)
                 .location(location)
@@ -70,22 +73,22 @@ public class CreatePostReqDto {
                 .build();
     }
 
-    public Skilled toSkilledEntity(Sports sports/*, User user*/) {
+    public Skilled toSkilledEntity(Sports sports, User user) {
         return Skilled.builder()
-                //.user(user)
+                .user(user)
                 .skilled(skilled)
                 .year(year)
                 .month(month)
                 .experience(experience)
                 .sports(sports)
-                .status(Status.ACTIVE)
+                .status(status.equals("모집중") ? Status.ACTIVE : Status.INACTIVE)
                 .build();
     }
 
     public Purpose toPurposeEntity(int i, Post post) {
         return Purpose.builder()
                 .contents(purposes.get(i))
-                .status(Status.ACTIVE)
+                .status(post.getStatus())
                 .post(post)
                 .build();
     }
@@ -96,7 +99,7 @@ public class CreatePostReqDto {
                 .startTime(dayandTimes.get(i).getStartTime())
                 .endTime(dayandTimes.get(i).getEndTime())
                 .post(post)
-                .status(Status.ACTIVE)
+                .status(post.getStatus())
                 .build();
     }
 }

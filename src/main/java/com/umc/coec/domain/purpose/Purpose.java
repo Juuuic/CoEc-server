@@ -3,7 +3,7 @@ package com.umc.coec.domain.purpose;
 import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
-import com.umc.coec.dto.partner_post.UpdatePostReqDto;
+import com.umc.coec.dto.partner.UpdatePostReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

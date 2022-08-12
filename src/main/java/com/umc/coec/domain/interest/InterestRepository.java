@@ -1,5 +1,7 @@
 package com.umc.coec.domain.interest;
 
+import com.umc.coec.domain.post.Post;
+import com.umc.coec.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -7,6 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface InterestRepository extends JpaRepository<Interest,Long> {
-    @Query("select i from Interest i where i.post.id = :postId")
-    public List<Interest> findInterestsByPostId(@Param("postId") Long postId);
+    public Boolean findByPostAndUser(Post post, User user);
 }

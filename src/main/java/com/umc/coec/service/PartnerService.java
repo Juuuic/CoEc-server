@@ -11,22 +11,28 @@ import com.umc.coec.domain.skilled.Skilled;
 import com.umc.coec.domain.skilled.SkilledRepository;
 import com.umc.coec.domain.time.Time;
 import com.umc.coec.domain.time.TimeRepository;
-import com.umc.coec.dto.partner_post.CreatePostReqDto;
-import com.umc.coec.dto.partner_post.ReadPostResDto;
-import com.umc.coec.dto.partner_post.UpdatePostReqDto;
+import com.umc.coec.domain.user.User;
+import com.umc.coec.domain.user.UserRepository;
+import com.umc.coec.dto.partner.PartnerPostReqDto;
+import com.umc.coec.dto.partner.PartnerPostResDto;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
-public class PartnerPostService {
+public class PartnerService {
     private final Logger logger= LoggerFactory.getLogger(getClass());
 
     private final PostRepository postRepository;
@@ -35,55 +41,25 @@ public class PartnerPostService {
     private final TimeRepository timeRepository;
     private final InterestRepository interestRepository;
 
-    /*TODO
-    *  1. 간단한 SELECT는 repository에서 직접 처리하기 (jpa query method 사용해서)
-    *  selectSkilled -> postRepository.findByPostAndUser
-    *  2. 게시글을 한 개 선택할 때나 여러개 선택할 때 같은 DTO로 통일하면 좋을 것 같음
-    *  List<>를 사용해서 통일하는 편이 유지보수에서 좋아보입니다.
-    *  3.
-    *
-    * */
-
-    public List<Post> selectPosts() {
-        return postRepository.findPartnerPosts();
-    }
-
-    public Skilled selectSkilled(@NotNull Post post) {
-        return skilledRepository.findSkilled(post.getSports().getId(), post.getUser().getId());
-    }
-
-    public Post selectPost(Long postId) {
-        return postRepository.findPartnerPost(postId);
-    }
-
-    public Boolean selectLikeState(Post post, Long userId) {
-        List<Interest> interests = interestRepository.findInterestsByPostId(post.getId());
-        for (int i = 0; i < interests.size(); i++) {
-            Interest interest = interests.get(i);
-            if (interest.getUser().getId() == userId)
-                return true;
-        }
-        return false;
-    }
-
+    // 파트너 게시물 등록
     @Transactional
-    public Boolean createPost(CreatePostReqDto createPostReqDto/*, User user*/) {
-        Post post = createPostReqDto.toPostEntity(/*user*/);
+    public Boolean createPost(PartnerPostReqDto partnerPostReqDto, User user) {
+        Post post = partnerPostReqDto.toPostEntity(user);
 
-        Skilled skilled = createPostReqDto.toSkilledEntity(post.getSports()/*, user*/);
+        Skilled skilled = partnerPostReqDto.toSkilledEntity(post.getSports(), user);
         skilledRepository.save(skilled);
 
         List<Purpose> purposes = new ArrayList<>();
-        for (int i = 0; i < createPostReqDto.getPurposes().size(); i++) {
-            Purpose purpose = createPostReqDto.toPurposeEntity(i, post);
+        for (int i = 0; i < partnerPostReqDto.getPurposes().size(); i++) {
+            Purpose purpose = partnerPostReqDto.toPurposeEntity(i, post);
             purposeRepository.save(purpose);
             purposes.add(purpose);
         }
         post.setPurposes(purposes);
 
         List<Time> times = new ArrayList<>();
-        for (int i = 0; i < createPostReqDto.getDayandTimes().size(); i++) {
-            Time time = createPostReqDto.toTimeEntity(i, post);
+        for (int i = 0; i < partnerPostReqDto.getDayandTimes().size(); i++) {
+            Time time = partnerPostReqDto.toTimeEntity(i, post);
             timeRepository.save(time);
             times.add(time);
         }
@@ -93,14 +69,50 @@ public class PartnerPostService {
         return true;
     }
 
-    @Transactional
-    public ReadPostResDto updatePost(Long postId, UpdatePostReqDto updatePostReqDto, Long userId) {
-        Post post = postRepository.findPartnerPost(postId);
-        if (post.getUser().getId() == userId) {
-            post.update(updatePostReqDto);
+    // 파트너 게시물 목록 조회
+    public List<PartnerPostResDto> readPartnerPosts() {
+        List<Post> posts = postRepository.findPartnerPosts();
+        List<PartnerPostResDto> readPostsResDtos = new ArrayList<>();
+        for (int i = 0; i < posts.size(); i++) {
+            PartnerPostResDto pDto = new PartnerPostResDto(posts.get(i));
+            readPostsResDtos.add(pDto);
+        }
+        return readPostsResDtos;
+    }
 
-            Skilled skilled = skilledRepository.findSkilled(post.getSports().getId(), userId);
-            skilled.update(updatePostReqDto);
+    // 파트너 게시물 조회
+    public PartnerPostResDto readPartnerPostByPostId(Long postId, User user) {
+        Post post = postRepository.findPartnerPost(postId);
+        Skilled skilled = skilledRepository.findBySportsAndUser(post.getSports(), post.getUser());
+        PartnerPostResDto partnerPostResDto = new PartnerPostResDto(post, skilled);
+
+        partnerPostResDto.setLikeState(interestRepository.findByPostAndUser(post, user));
+        return partnerPostResDto;
+    }
+
+    //수정할 때 null인 칼럼 뽑아내기
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) emptyNames.add(pd.getName());
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
+
+    // 파트너 게시물 수정
+    @Transactional
+    public Boolean updatePost(Long postId, PartnerPostReqDto partnerPostReqDto, User user) {
+        Post post = postRepository.findPartnerPost(postId);
+        if (post.getUser().equals(user)) {
+            post.update(partnerPostReqDto);
+
+            Skilled skilled = skilledRepository.findBySportsAndUser(post.getSports(), user);
+            skilled.update(partnerPostReqDto);
             skilledRepository.save(skilled);
 
             // 기존 목적들 삭제
@@ -108,8 +120,8 @@ public class PartnerPostService {
                 purposeRepository.delete(post.getPurposes().get(i));
             // 새로운 목적들 추가
             List<Purpose> purposes = new ArrayList<>();
-            for (int i = 0; i < updatePostReqDto.getPurposes().size(); i++) {
-                Purpose purpose = updatePostReqDto.toPurposeEntity(i, post);
+            for (int i = 0; i < partnerPostReqDto.getPurposes().size(); i++) {
+                Purpose purpose = partnerPostReqDto.toPurposeEntity(i, post);
                 purposeRepository.save(purpose);
                 purposes.add(purpose);
             }
@@ -120,23 +132,20 @@ public class PartnerPostService {
                 timeRepository.delete(post.getTimes().get(i));
             // 새로운 요일별 시간들 추가
             List<Time> times = new ArrayList<>();
-            for (int i = 0; i < updatePostReqDto.getDayandTimes().size(); i++) {
-                Time time = updatePostReqDto.toTimeEntity(i, post);
+            for (int i = 0; i < partnerPostReqDto.getDayandTimes().size(); i++) {
+                Time time = partnerPostReqDto.toTimeEntity(i, post);
                 timeRepository.save(time);
                 times.add(time);
             }
             post.setTimes(times);
 
             postRepository.save(post);
-
-            // 게시물 조회 Dto로 변환
-            ReadPostResDto readPostResDto = new ReadPostResDto(post, skilled);
-            readPostResDto.setLikeState(this.selectLikeState(post, userId));
-            return readPostResDto;
+            return true;
         }
-        return null;
+        return false;
     }
 
+    // 파트너 게시물 삭제
     public Boolean deletePost(Long postId, Long userId) {
         Post post = postRepository.findPartnerPost(postId);
         if (post.getUser().getId() == userId) {

@@ -1,13 +1,9 @@
-package com.umc.coec.dto.partner_post;
+package com.umc.coec.dto.partner;
 
-import com.umc.coec.domain.enums.Division;
 import com.umc.coec.domain.enums.Gender;
 
-import com.umc.coec.domain.enums.Status;
-import com.umc.coec.domain.location.Location;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.purpose.Purpose;
-import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.time.Time;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +18,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
+// 삭제 예정
+
 public class UpdatePostReqDto {
 
     private List<String> purposes = new ArrayList<>();
