@@ -3,15 +3,13 @@ package com.umc.coec.dto.partner_post;
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.skilled.Skilled;
+import com.umc.coec.domain.time.Time;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetPartnerPostDto {
+public class ReadPostResDto {
     private String nickname;
     private String profileImgUrl;
     private List<String> purposes = new ArrayList<>();
@@ -33,7 +31,7 @@ public class GetPartnerPostDto {
     private LocalDate endDate;
 
     // 요일별 시간
-    private List<DayandTime> dayandTimes;
+    private List<DayandTime> dayandTimes = new ArrayList<>();
 
     private int skilled;
     private int year;
@@ -52,7 +50,7 @@ public class GetPartnerPostDto {
     private String status;
 
     // entity -> dto
-    public GetPartnerPostDto(Post post, Skilled skilled) {
+    public ReadPostResDto(Post post, Skilled skilled) {
         this.nickname = post.getUser().getNickname();
         this.profileImgUrl = post.getUser().getProfileImgUrl();
         for (int i = 0; i < post.getPurposes().size(); i++)
@@ -64,6 +62,11 @@ public class GetPartnerPostDto {
 
         this.startDate = post.getStartDate();
         this.endDate = post.getEndDate();
+
+        for (int i = 0; i < post.getTimes().size(); i++) {
+            Time time = post.getTimes().get(i);
+            this.dayandTimes.add(new DayandTime(time.getDay(), time.getStartTime(), time.getEndTime()));
+        }
 
         this.skilled = skilled.getSkilled();
         this.year = skilled.getYear();
