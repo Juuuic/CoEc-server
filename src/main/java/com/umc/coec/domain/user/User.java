@@ -12,7 +12,6 @@ import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

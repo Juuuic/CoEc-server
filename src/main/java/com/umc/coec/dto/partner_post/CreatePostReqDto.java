@@ -1,6 +1,5 @@
 package com.umc.coec.dto.partner_post;
 
-import com.umc.coec.domain.enums.Day;
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.enums.Division;
 import com.umc.coec.domain.enums.Status;
@@ -23,7 +22,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostPartnerPostDto {
+public class CreatePostReqDto {
     private String sportsName;
 
     private int headCount;
@@ -36,10 +35,10 @@ public class PostPartnerPostDto {
     private LocalDate endDate;
 
     // 요일별 시간
-    private List<DayandTime> dayandTimes;
+    private List<DayandTime> dayandTimes = new ArrayList<>();
 
     private int ageWanted;
-    private String genderWanted;
+    private Gender genderWanted;
 
     private int skilled;
     private int year;
@@ -50,13 +49,14 @@ public class PostPartnerPostDto {
 
     private List<String> purposes = new ArrayList<>();
 
-    public Post toPostEntity() {
+    public Post toPostEntity(/*User user*/) {
         Sports sports = new Sports();
         sports.setName(sportsName);
         Location location = new Location();
         location.setSiDo(siDo); location.setSiGunGu(siGunGu); location.setEupMyunDongLi(eupMyunDongLi);
 
         return Post.builder()
+                //.user(user)
                 .division(Division.PARTNER)
                 .status(Status.ACTIVE)
                 .sports(sports)
@@ -65,13 +65,14 @@ public class PostPartnerPostDto {
                 .startDate(startDate)
                 .endDate(endDate)
                 .ageWanted(ageWanted)
-                .genderWanted(genderWanted.equals("Male")? Gender.MALE : Gender.FEMALE)
+                .genderWanted(genderWanted)
                 .contents(contents)
                 .build();
     }
 
-    public Skilled toSkilledEntity(Sports sports) {
+    public Skilled toSkilledEntity(Sports sports/*, User user*/) {
         return Skilled.builder()
+                //.user(user)
                 .skilled(skilled)
                 .year(year)
                 .month(month)
@@ -91,13 +92,7 @@ public class PostPartnerPostDto {
 
     public Time toTimeEntity(int i, Post post) {
         return Time.builder()
-                .day(dayandTimes.get(i).getDay().equals("월")? Day.MON:
-                        dayandTimes.get(i).getDay().equals("화")? Day.TUE:
-                                dayandTimes.get(i).getDay().equals("수")? Day.WED:
-                                        dayandTimes.get(i).getDay().equals("목")? Day.THU:
-                                                dayandTimes.get(i).getDay().equals("금")? Day.FRI:
-                                                        dayandTimes.get(i).getDay().equals("토")? Day.SAT: Day.SUN
-                )
+                .day(dayandTimes.get(i).getDay())
                 .startTime(dayandTimes.get(i).getStartTime())
                 .endTime(dayandTimes.get(i).getEndTime())
                 .post(post)

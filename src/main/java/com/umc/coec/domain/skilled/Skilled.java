@@ -4,6 +4,7 @@ import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.user.User;
+import com.umc.coec.dto.partner_post.UpdatePostReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +42,16 @@ public class Skilled extends BaseTimeEntity  {
     @Column(nullable = false)
     private int skilled;
 
-    @Comment( "경력, 수상이력 등 종목 관련 자기소개")
+    @Comment("경력, 수상이력 등 종목 관련 자기소개")
     @Column(length = 1000)
     private String experience;
+
+    public void update(UpdatePostReqDto updatePostReqDto) {
+        this.setSkilled(updatePostReqDto.getSkilled());
+        this.setYear(updatePostReqDto.getYear());
+        this.setMonth(updatePostReqDto.getMonth());
+        this.setExperience(updatePostReqDto.getExperience());
+
+        this.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+    }
 }
