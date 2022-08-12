@@ -21,6 +21,14 @@ public class MentoringController {
 
     private final MentoringService mentoringService;
 
+    /*
+    TODO
+     전체적인 로직이 컨트롤러 -> 서비스로 이동해야 함
+     컨트롤러는 서비스로 DTO만 넘기고 서비스에서 모든 처리를 끝낸 후에 DTO만 받아오는 방식으로 변경
+      컨트롤러에서는 간단한 분기정도만 처리하기
+     */
+
+
     //1. 멘토멘티 포스트 등록
     @PostMapping("/api/v1/posts/mentoring")
     public ResponseEntity<?> saveMentoringPost(@RequestBody MentoringPostsSaveRequestDto requestDto) {

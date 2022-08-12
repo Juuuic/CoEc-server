@@ -33,6 +33,15 @@ public class PartnerPostService {
     private final PurposeRepository purposeRepository;
     private final TimeRepository timeRepository;
 
+    /*TODO
+    *  1. 간단한 SELECT는 repository에서 직접 처리하기 (jpa query method 사용해서)
+    *  selectSkilled -> postRepository.findByPostAndUser
+    *  2. 게시글을 한 개 선택할 때나 여러개 선택할 때 같은 DTO로 통일하면 좋을 것 같음
+    *  List<>를 사용해서 통일하는 편이 유지보수에서 좋아보입니다.
+    *  3.
+    *
+    * */
+
     public List<Post> selectPosts() {
         return postRepository.findPartnerPosts();
     }

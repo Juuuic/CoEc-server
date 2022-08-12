@@ -32,6 +32,13 @@ public class PartnerPostsController {
 
     private final PartnerPostService partnerPostService;
 
+    /*
+    *TODO
+    * 전체적인 로직이 컨트롤러 -> 서비스로 이동해야 함
+    * 컨트롤러는 서비스로 DTO만 넘기고 서비스에서 모든 처리를 끝낸 후에 DTO만 받아오는 방식으로 변경
+    * 컨트롤러에서는 간단한 분기정도만 처리하기
+    */
+
     // 게시물 목록 조회
     @GetMapping("")
     public ResponseEntity<List<GetPartnerPostsDto>> getPosts(){

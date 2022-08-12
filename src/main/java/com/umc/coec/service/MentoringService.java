@@ -32,9 +32,6 @@ public class MentoringService {
         return true;
     }
 
-
-
-
     //하트 눌렀는지 확인
     public Boolean findLikeState(Post post, PrincipalDetails principalDetails) {
         List<Interest> interestList = postrepository.findInterestByPostId(post.getId());
@@ -46,28 +43,22 @@ public class MentoringService {
         return false;
     }
 
-
-
     //멘토멘티 포스트 조회 - 전체 목록
     public List<Post> selectMentoringPosts() {
         return postrepository.findMentoringPostsAll();
     }
-
-
 
     //멘토멘티 포스트 조회 - by id
     public Post findMentoringPostById(Long id) {
         return postrepository.findMentoringPostById(id);
     }
 
-
-
     //수정할 때 null인 칼럼 뽑아내기
     public static String[] getNullPropertyNames (Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-        Set<String> emptyNames = new HashSet<String>();
+        Set<String> emptyNames = new HashSet<>();
         for(java.beans.PropertyDescriptor pd : pds) {
             Object srcValue = src.getPropertyValue(pd.getName());
             if (srcValue == null) emptyNames.add(pd.getName());
