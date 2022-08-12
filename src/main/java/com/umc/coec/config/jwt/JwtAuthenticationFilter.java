@@ -88,6 +88,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             ResponseEntity<Map<String,String>> responseEntity = new ResponseEntity<>(dataMap,HttpStatus.OK);
             response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().print(objectMapper.writeValueAsString(responseEntity));
             response.getWriter().flush();
