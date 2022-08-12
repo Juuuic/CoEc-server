@@ -36,6 +36,11 @@ public class MentoringPostsSaveRequestDto {
 
 
 
+    /*
+    TODO
+       요일별로 시간 설정하는 부분도 들어가야하지 않나요 ??
+     */
+    
     public Post toEntity() {
         Location location = new Location();
         location.setEupMyunDongLi(eupMyunDongLi);
