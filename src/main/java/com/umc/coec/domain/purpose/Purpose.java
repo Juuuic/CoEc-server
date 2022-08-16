@@ -3,7 +3,6 @@ package com.umc.coec.domain.purpose;
 import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
-import com.umc.coec.dto.partner.UpdatePostReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,11 +31,4 @@ public class Purpose extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
     private Post post;
-
-    public Purpose update(int i, UpdatePostReqDto updatePostReqDto) {
-        contents = updatePostReqDto.getPurposes().get(i);
-        status = updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE;
-
-        return this;
-    }
 }

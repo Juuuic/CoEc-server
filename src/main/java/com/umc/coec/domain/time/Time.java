@@ -4,7 +4,6 @@ import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Day;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.post.Post;
-import com.umc.coec.dto.partner.UpdatePostReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,13 +42,4 @@ public class Time extends BaseTimeEntity  {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
     private Post post;
-
-    public Time update(int i, UpdatePostReqDto updatePostReqDto) {
-        day = updatePostReqDto.getDayandTimes().get(i).getDay();
-        startTime = updatePostReqDto.getDayandTimes().get(i).getStartTime();
-        endTime = updatePostReqDto.getDayandTimes().get(i).getEndTime();
-        status = updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE;
-
-        return this;
-    }
 }

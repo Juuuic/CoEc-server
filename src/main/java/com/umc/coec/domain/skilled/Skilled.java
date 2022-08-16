@@ -4,9 +4,7 @@ import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.user.User;
-import com.umc.coec.dto.partner.PartnerPostReqDto;
-import com.umc.coec.dto.partner.PartnerPostResDto;
-import com.umc.coec.dto.partner.UpdatePostReqDto;
+import com.umc.coec.dto.partner.PartnerPostRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,12 +45,13 @@ public class Skilled extends BaseTimeEntity  {
     @Column(length = 1000)
     private String experience;
 
-    public void update(PartnerPostReqDto partnerPostReqDto) {
-        this.setSkilled(partnerPostReqDto.getSkilled());
-        this.setYear(partnerPostReqDto.getYear());
-        this.setMonth(partnerPostReqDto.getMonth());
-        this.setExperience(partnerPostReqDto.getExperience());
+    public void update(PartnerPostRequestDto partnerPostRequestDto) {
+        if (partnerPostRequestDto.getSkilled() >= 0)
+            this.setSkilled(partnerPostRequestDto.getSkilled());
+        this.setYear(partnerPostRequestDto.getYear());
+        this.setMonth(partnerPostRequestDto.getMonth());
+        this.setExperience(partnerPostRequestDto.getExperience());
 
-        this.setStatus(partnerPostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        this.setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
     }
 }

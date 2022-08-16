@@ -20,29 +20,30 @@ public class JoinPostController {
     private final JoinPostService joinPostService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<?> createJoinPost(@PathVariable("postId") Long postId, @AuthenticationPrincipal PrincipalDetails principalDetails
-            , @RequestBody JoinPostReqDto joinPostReqDto) {
-        if (joinPostService.createJoinPost(postId, joinPostReqDto/*, principalDetails.getUser()*/))
+    public ResponseEntity<?> createJoinPost(@PathVariable("postId") Long postId, @RequestBody JoinPostReqDto joinPostReqDto
+            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (joinPostService.createJoinPost(postId, joinPostReqDto, principalDetails.getUser()))
             return new ResponseEntity<>("신청이 완료되었습니다.", HttpStatus.CREATED);
         return new ResponseEntity<>("신청에 실패하였습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/{joinPostId}")
-    public ResponseEntity<?> readJoinPost(@PathVariable("joinPostId") Long joinPostId) {
-        JoinPostResDto joinPostResDto = new JoinPostResDto(joinPostService.readJoinPost(joinPostId));
+    public ResponseEntity<?> readJoinPost(@PathVariable("joinPostId") Long joinPostId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        JoinPostResDto joinPostResDto = new JoinPostResDto(joinPostService.readJoinPost(joinPostId, principalDetails.getUser()));
         return new ResponseEntity<>(joinPostResDto, HttpStatus.OK);
     }
 
     @PatchMapping("/{joinPostId}")
-    public ResponseEntity<?> updateJoinPost(@PathVariable("joinPostId") Long joinPostId, @RequestBody JoinPostReqDto joinPostReqDto) {
-        if (joinPostService.updateJoinPost(joinPostId, joinPostReqDto))
+    public ResponseEntity<?> updateJoinPost(@PathVariable("joinPostId") Long joinPostId, @RequestBody JoinPostReqDto joinPostReqDto
+            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (joinPostService.updateJoinPost(joinPostId, joinPostReqDto, principalDetails.getUser()))
             return new ResponseEntity<>("신청글 수정이 완료되었습니다.", HttpStatus.CREATED);
         return new ResponseEntity<>("신청글 수정에 실패하였습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PatchMapping("/{joinPostId}/status")
-    public ResponseEntity<?> deleteJoinPost(@PathVariable("joinPostId") Long joinPostId) {
-        if (joinPostService.deleteJoinPost(joinPostId))
+    public ResponseEntity<?> deleteJoinPost(@PathVariable("joinPostId") Long joinPostId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (joinPostService.deleteJoinPost(joinPostId, principalDetails.getUser()))
             return new ResponseEntity<>("신청글 삭제가 완료되었습니다.", HttpStatus.OK);
         return new ResponseEntity<>("신청글 삭제에 실패하였습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
     }

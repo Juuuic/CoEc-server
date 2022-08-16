@@ -1,16 +1,16 @@
 package com.umc.coec.dto.partner;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.umc.coec.domain.enums.Day;
 import com.umc.coec.domain.enums.Gender;
 import com.umc.coec.domain.post.Post;
+import com.umc.coec.domain.purpose.Purpose;
 import com.umc.coec.domain.skilled.Skilled;
 import com.umc.coec.domain.time.Time;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PartnerPostResDto {
+public class PartnerPostResponseDto {
     private String nickname;
     private String profileImgUrl;
-    private List<String> purposes = new ArrayList<>();
+    private List<ExecPurpose> purposes;
     private LocalDate updatedAt;
     private String sportsName;
 
@@ -36,7 +36,7 @@ public class PartnerPostResDto {
     private LocalDate endDate;
 
     // 요일별 시간
-    private List<DayandTime> dayandTimes = new ArrayList<>();
+    private List<DayandTime> dayandTimes;
 
     private int skilled;
     private int year;
@@ -55,7 +55,7 @@ public class PartnerPostResDto {
     private String status;
 
     // entity -> 게시물 목록 dto
-    public PartnerPostResDto(Post post) {
+    public PartnerPostResponseDto(Post post) {
         this.sportsName = post.getSports().getName();
         this.headCount = post.getHeadCount();
         this.siDo = post.getLocation().getSiDo();
@@ -73,11 +73,10 @@ public class PartnerPostResDto {
     }
 
     // entity -> 게시물 dto
-    public PartnerPostResDto(Post post, Skilled skilled) {
+    public PartnerPostResponseDto(Post post, Skilled skilled) {
         this.nickname = post.getUser().getNickname();
         this.profileImgUrl = post.getUser().getProfileImgUrl();
-        for (int i = 0; i < post.getPurposes().size(); i++)
-            this.purposes.add(post.getPurposes().get(i).getContents());
+        this.purposes = ExecPurpose.getPurposes(post.getPurposes());
         this.updatedAt = LocalDate.from(post.getUpdatedAt());
         this.sportsName = post.getSports().getName();
         this.headCount = post.getHeadCount();
@@ -88,10 +87,7 @@ public class PartnerPostResDto {
         this.startDate = post.getStartDate();
         this.endDate = post.getEndDate();
 
-        for (int i = 0; i < post.getTimes().size(); i++) {
-            Time time = post.getTimes().get(i);
-            this.dayandTimes.add(new DayandTime(time.getDay(), time.getStartTime(), time.getEndTime()));
-        }
+        this.dayandTimes = DayandTime.getDayandTimes(post.getTimes());
 
         this.skilled = skilled.getSkilled();
         this.year = skilled.getYear();
@@ -108,6 +104,40 @@ public class PartnerPostResDto {
         switch (post.getStatus()) {
             case ACTIVE: this.status = "모집중"; break;
             case INACTIVE: this.status = "모집완료";
+        }
+    }
+
+    @Getter
+    static class ExecPurpose {
+        private String contents;
+
+        static List<ExecPurpose> getPurposes(List<Purpose> purposes) {
+            List<ExecPurpose> execPurposes = new ArrayList<>();
+            purposes.forEach(purpose -> execPurposes.add(new ExecPurpose(purpose)));
+            return execPurposes;
+        }
+
+        public ExecPurpose(Purpose purpose) {
+            this.contents = purpose.getContents();
+        }
+    }
+
+    @Getter
+    static class DayandTime {
+        private Day day;
+        private LocalTime startTime;
+        private LocalTime endTime;
+
+        static List<DayandTime> getDayandTimes(List<Time> times) {
+            List<DayandTime> dayandTimes = new ArrayList<>();
+            times.forEach(time -> dayandTimes.add(new DayandTime(time)));
+            return dayandTimes;
+        }
+
+        public DayandTime(Time time) {
+            this.day = time.getDay();
+            this.startTime = time.getStartTime();
+            this.endTime = time.getEndTime();
         }
     }
 }

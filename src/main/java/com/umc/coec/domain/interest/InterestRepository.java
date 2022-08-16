@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface InterestRepository extends JpaRepository<Interest,Long> {
-    public Boolean findByPostAndUser(Post post, User user);
+    public Boolean existsByPostAndUser(Post post, User user);
 }

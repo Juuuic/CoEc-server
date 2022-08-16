@@ -23,7 +23,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PartnerPostReqDto {
+public class PartnerPostRequestDto {
     private String sportsName;
 
     private int headCount;

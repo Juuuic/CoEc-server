@@ -30,4 +30,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p where p.id = :postId and p.status != 'DELETED' and p.division = 'PARTNER'")
     public Post findPartnerPost(@Param("postId") Long postId);
+
+    @Query("select p from Post p where p.id = :postId and p.status = 'ACTIVE'")
+    public Post findJoinablePost(@Param("postId")Long postId);
 }
