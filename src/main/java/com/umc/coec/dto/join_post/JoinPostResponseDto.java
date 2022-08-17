@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinPostResDto {
+public class JoinPostResponseDto {
     private String nickname;
     private String profileImgUrl;
     private String comment;
 
-    public JoinPostResDto(JoinPost joinPost) {
+    public JoinPostResponseDto(JoinPost joinPost) {
         nickname = joinPost.getUser().getNickname();
         profileImgUrl = joinPost.getUser().getProfileImgUrl();
         comment = joinPost.getComment();

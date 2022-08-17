@@ -6,7 +6,7 @@ import com.umc.coec.domain.join_post.JoinPostRepository;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.post.PostRepository;
 import com.umc.coec.domain.user.User;
-import com.umc.coec.dto.join_post.JoinPostReqDto;
+import com.umc.coec.dto.join_post.JoinPostRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,12 @@ public class JoinPostService {
     private final PostRepository postRepository;
     private final JoinPostRepository joinPostRepository;
 
-    public boolean createJoinPost(Long postId, JoinPostReqDto joinPostReqDto, User user) {
+    public boolean createJoinPost(Long postId, JoinPostRequestDto joinPostRequestDto, User user) {
         Post post = postRepository.findJoinablePost(postId);
         if (post == null)
             return false;
         if (!post.getUser().equals(user)) {
-            JoinPost joinPost = joinPostReqDto.toEntity(post, user);
+            JoinPost joinPost = joinPostRequestDto.toEntity(post, user);
             joinPostRepository.save(joinPost);
             return true;
         }
@@ -40,11 +40,11 @@ public class JoinPostService {
         return joinPost;
     }
 
-    public boolean updateJoinPost(Long id, JoinPostReqDto joinPostReqDto, User user) {
+    public boolean updateJoinPost(Long id, JoinPostRequestDto joinPostRequestDto, User user) {
         JoinPost joinPost = joinPostRepository.findByIdAndUser(id, user);
         if (joinPost == null)
             return false;
-        joinPost.setComment(joinPostReqDto.getComment());
+        joinPost.setComment(joinPostRequestDto.getComment());
         joinPostRepository.save(joinPost);
         return true;
     }

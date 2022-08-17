@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinPostReqDto {
+public class JoinPostRequestDto {
     @NotBlank(message = "하고 싶은 말은 필수로 입력해야 합니다.")
     private String comment;
 
