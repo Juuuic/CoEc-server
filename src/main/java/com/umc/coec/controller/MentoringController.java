@@ -7,6 +7,8 @@ import com.umc.coec.dto.mentor.MentoringPostsDto;
 import com.umc.coec.dto.mentor.MentoringPostsSaveRequestDto;
 import com.umc.coec.service.MentoringService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,6 +43,7 @@ public class MentoringController {
     //2. 멘토멘티 포스트 조회 - 전체 목록
     @GetMapping("/api/v1/posts/mentoring")
     public ResponseEntity<List<MentoringPostsDto>> getMentoringPosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        /*
         List<Post> postList = mentoringService.selectMentoringPosts();
         List<MentoringPostsDto> postsDtoList = new ArrayList<>();
         for (int i=0; i<postList.size(); i++) {
@@ -49,6 +52,8 @@ public class MentoringController {
             postsDtoList.add(m);
         }
         return new ResponseEntity<>(postsDtoList, HttpStatus.OK);
+         */
+        return new ResponseEntity<>(mentoringService.selectMentoringPosts(principalDetails.getUser()), HttpStatus.OK);
     }
 
 
@@ -56,17 +61,21 @@ public class MentoringController {
     //3. 멘토멘티 포스트 조회 - 포스트별 상세 조회
     @GetMapping("/api/v1/posts/mentoring/{id}")
     public ResponseEntity<MentoringPostResponseDto> getMentoringPostById(@PathVariable("id") Long id) {
+        /*
         Post post = mentoringService.findMentoringPostById(id);
         MentoringPostResponseDto responsePost = new MentoringPostResponseDto(post);
 
         return new ResponseEntity<>(responsePost, HttpStatus.OK);
+        */
+        return new ResponseEntity<>(mentoringService.findMentoringPostById(id), HttpStatus.OK);
     }
 
 
     //4. 멘토멘티 포스트 수정
     @PutMapping("/api/v1/posts/mentoring/{id}")
-    public ResponseEntity<?> updateMentoringPost(@PathVariable("id") Long id, @RequestBody MentoringPostsSaveRequestDto requestDto) {
-        if(mentoringService.updateMentoringPost(id, requestDto))
+    public ResponseEntity<?> updateMentoringPost(@PathVariable("id") Long id, @RequestBody MentoringPostsSaveRequestDto requestDto,
+                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if(mentoringService.updateMentoringPost(id, requestDto, principalDetails.getUser()))
             return new ResponseEntity<>("수정 완료되었습니다", HttpStatus.OK);
         return new ResponseEntity<>("수정 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
     }

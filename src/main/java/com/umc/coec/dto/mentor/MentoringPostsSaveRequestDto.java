@@ -9,10 +9,12 @@ import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.time.Time;
 import com.umc.coec.domain.user.User;
+import com.umc.coec.dto.partner.DayandTime;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,14 +35,18 @@ public class MentoringPostsSaveRequestDto {
     private String genderWantedName;
     private String contents;
     private String title;
-
+    private String status;
 
 
     /*
     TODO
        요일별로 시간 설정하는 부분도 들어가야하지 않나요 ??
      */
-    
+
+    //추가: 요일별 시간 추가
+    private List<DayandTime> dayandTimes = new ArrayList<>();
+
+
     public Post toEntity() {
         Location location = new Location();
         location.setEupMyunDongLi(eupMyunDongLi);
@@ -60,7 +66,20 @@ public class MentoringPostsSaveRequestDto {
                 .genderWanted(Gender.valueOf(genderWantedName))
                 .contents(contents)
                 .title(title)
-                .status(Status.ACTIVE)
+                .status(status.equals("모집중") ? Status.ACTIVE : Status.INACTIVE)
                 .build();
     }
+
+
+    //추가: 요일별 시간 추가
+    public Time toTimeEntity(int i, Post post) {
+        return Time.builder()
+                .day(dayandTimes.get(i).getDay())
+                .startTime(dayandTimes.get(i).getStartTime())
+                .endTime(dayandTimes.get(i).getEndTime())
+                .post(post)
+                .status(post.getStatus())
+                .build();
+    }
+
 }
