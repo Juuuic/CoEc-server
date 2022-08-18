@@ -4,7 +4,7 @@ import com.umc.coec.domain.BaseTimeEntity;
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.user.User;
-import com.umc.coec.dto.partner_post.UpdatePostReqDto;
+import com.umc.coec.dto.partner.PartnerPostRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -46,12 +45,13 @@ public class Skilled extends BaseTimeEntity  {
     @Column(length = 1000)
     private String experience;
 
-    public void update(UpdatePostReqDto updatePostReqDto) {
-        this.setSkilled(updatePostReqDto.getSkilled());
-        this.setYear(updatePostReqDto.getYear());
-        this.setMonth(updatePostReqDto.getMonth());
-        this.setExperience(updatePostReqDto.getExperience());
+    public void update(PartnerPostRequestDto partnerPostRequestDto) {
+        if (partnerPostRequestDto.getSkilled() >= 0)
+            this.setSkilled(partnerPostRequestDto.getSkilled());
+        this.setYear(partnerPostRequestDto.getYear());
+        this.setMonth(partnerPostRequestDto.getMonth());
+        this.setExperience(partnerPostRequestDto.getExperience());
 
-        this.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        this.setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
     }
 }

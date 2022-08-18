@@ -11,10 +11,9 @@ import com.umc.coec.domain.purpose.Purpose;
 import com.umc.coec.domain.sports.Sports;
 import com.umc.coec.domain.time.Time;
 import com.umc.coec.domain.user.User;
-import com.umc.coec.dto.partner_post.UpdatePostReqDto;
+import com.umc.coec.dto.partner.PartnerPostRequestDto;
 import lombok.*;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -90,34 +89,37 @@ public class Post extends BaseTimeEntity  {
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "post")
     private List<Interest> interests = new ArrayList<>();
 
-    public void update(UpdatePostReqDto updatePostReqDto) {
+    public void update(PartnerPostRequestDto partnerPostRequestDto) {
+        // 입력 필수인 것들은 null 걸러내서 기존 거 그대로
         int i;
 
-        sports.setName(updatePostReqDto.getSportsName());
+        if (partnerPostRequestDto.getSportsName() != null)
+            sports.setName(partnerPostRequestDto.getSportsName());
 
-        this.setHeadCount(updatePostReqDto.getHeadCount());
+        this.setHeadCount(partnerPostRequestDto.getHeadCount());
 
-        location.setSiDo(updatePostReqDto.getSiDo());
-        location.setSiGunGu(updatePostReqDto.getSiGunGu());
-        location.setEupMyunDongLi(updatePostReqDto.getEupMyunDongLi());
+        location.setSiDo(partnerPostRequestDto.getSiDo());
+        location.setSiGunGu(partnerPostRequestDto.getSiGunGu());
+        location.setEupMyunDongLi(partnerPostRequestDto.getEupMyunDongLi());
 
-        this.setStartDate(updatePostReqDto.getStartDate());
-        this.setEndDate(updatePostReqDto.getEndDate());
+        if (partnerPostRequestDto.getStartDate() != null)
+            this.setStartDate(partnerPostRequestDto.getStartDate());
+        this.setEndDate(partnerPostRequestDto.getEndDate());
 
-        this.setAgeWanted(updatePostReqDto.getAgeWanted());
-        this.setGenderWanted(updatePostReqDto.getGenderWanted());
+        this.setAgeWanted(partnerPostRequestDto.getAgeWanted());
+        this.setGenderWanted(partnerPostRequestDto.getGenderWanted());
 
-        this.setContents(updatePostReqDto.getContents());
-        this.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        this.setContents(partnerPostRequestDto.getContents());
+        this.setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
 
         // 모집중 or 모집완료에 따라 status 변경
-        sports.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
-        location.setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        sports.setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+        location.setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
 
         for (i = 0; i < joinPosts.size(); i++)
-            joinPosts.get(i).setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+            joinPosts.get(i).setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
         // 일단 모집완료된 글에는 관심 못 누르게 설정
         for (i = 0; i < interests.size(); i++)
-            interests.get(i).setStatus(updatePostReqDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
+            interests.get(i).setStatus(partnerPostRequestDto.getStatus().equals("모집중") ? Status.ACTIVE : Status.INACTIVE);
     }
 }

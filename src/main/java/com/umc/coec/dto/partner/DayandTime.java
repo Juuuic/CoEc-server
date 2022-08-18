@@ -1,4 +1,4 @@
-package com.umc.coec.dto.partner_post;
+package com.umc.coec.dto.partner;
 
 import com.umc.coec.domain.enums.Day;
 import lombok.AllArgsConstructor;
