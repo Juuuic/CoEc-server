@@ -44,7 +44,7 @@ public class Post extends BaseTimeEntity  {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sportsId")
     private Sports sports;
 
@@ -56,7 +56,7 @@ public class Post extends BaseTimeEntity  {
     @Comment("종료 날짜")
     private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "locationId", nullable = false)
     private Location location;
 
