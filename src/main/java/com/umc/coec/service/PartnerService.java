@@ -2,52 +2,79 @@ package com.umc.coec.service;
 
 import com.umc.coec.domain.enums.Status;
 import com.umc.coec.domain.interest.InterestRepository;
+import com.umc.coec.domain.location.Location;
+import com.umc.coec.domain.location.LocationRepository;
 import com.umc.coec.domain.post.Post;
 import com.umc.coec.domain.post.PostRepository;
 import com.umc.coec.domain.purpose.Purpose;
 import com.umc.coec.domain.purpose.PurposeRepository;
 import com.umc.coec.domain.skilled.Skilled;
 import com.umc.coec.domain.skilled.SkilledRepository;
+import com.umc.coec.domain.sports.Sports;
+import com.umc.coec.domain.sports.SportsRepository;
 import com.umc.coec.domain.time.Time;
 import com.umc.coec.domain.time.TimeRepository;
 import com.umc.coec.domain.user.User;
 import com.umc.coec.dto.partner.PartnerPostRequestDto;
 import com.umc.coec.dto.partner.PartnerPostResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class PartnerService {
-    private final Logger logger= LoggerFactory.getLogger(getClass());
 
     private final PostRepository postRepository;
     private final SkilledRepository skilledRepository;
     private final PurposeRepository purposeRepository;
     private final TimeRepository timeRepository;
     private final InterestRepository interestRepository;
+    private final SportsRepository sportsRepository;
+    private final LocationRepository locationRepository;
 
     // 파트너 게시물 등록
     @Transactional
     public Boolean createPartnerPost(PartnerPostRequestDto partnerPostRequestDto, User user) {
-        Post post = partnerPostRequestDto.toPostEntity(user);
 
-        Skilled skilled = partnerPostRequestDto.toSkilledEntity(post.getSports(), user);
+        //기존에 존재하는 스포츠 가져오기
+        Sports selectedSports = sportsRepository.findByName(partnerPostRequestDto.getSportsName())
+                    .orElseThrow(()->{
+                        throw new RuntimeException("해당하는 스포츠가 존재하지 않습니다.");
+                    });
+
+        //지역 생성
+        Location location = Location.builder()
+                    .siDo(partnerPostRequestDto.getSiDo())
+                    .siGunGu(partnerPostRequestDto.getSiGunGu())
+                    .eupMyunDongLi(partnerPostRequestDto.getEupMyunDongLi())
+                    .status(Status.ACTIVE)
+                    .build();
+
+        Skilled skilled = partnerPostRequestDto.toSkilledEntity(selectedSports, user);
         skilledRepository.save(skilled);
 
+        Post post = partnerPostRequestDto.toPostEntity(user,selectedSports,location);
+        postRepository.save(post);
+
+
         List<Purpose> purposes = new ArrayList<>();
+
         for (int i = 0; i < partnerPostRequestDto.getPurposes().size(); i++) {
             Purpose purpose = partnerPostRequestDto.toPurposeEntity(i, post);
             purposeRepository.save(purpose);
             purposes.add(purpose);
         }
-        post.setPurposes(purposes);
 
         List<Time> times = new ArrayList<>();
         for (int i = 0; i < partnerPostRequestDto.getDayandTimes().size(); i++) {
@@ -57,23 +84,19 @@ public class PartnerService {
         }
         post.setTimes(times);
 
-        postRepository.save(post);
         return true;
     }
 
     // 파트너 게시물 목록 조회
-    public List<PartnerPostResponseDto> readPartnerPosts() {
+    public List<PartnerPostResponseDto> getPartnerPosts() {
         List<Post> posts = postRepository.findPartnerPosts();
-        List<PartnerPostResponseDto> readPostsResDtos = new ArrayList<>();
-        for (int i = 0; i < posts.size(); i++) {
-            PartnerPostResponseDto pDto = new PartnerPostResponseDto(posts.get(i));
-            readPostsResDtos.add(pDto);
-        }
-        return readPostsResDtos;
+        List<PartnerPostResponseDto> postResDtos = new ArrayList<>();
+        posts.forEach(post -> postResDtos.add(new PartnerPostResponseDto(post)));
+        return postResDtos;
     }
 
     // 파트너 게시물 조회
-    public PartnerPostResponseDto readPartnerPostByPostId(Long postId, User user) {
+    public PartnerPostResponseDto getPartnerPostByPostId(Long postId, User user) {
         Post post = postRepository.findPartnerPost(postId);
         Skilled skilled = skilledRepository.findBySportsAndUser(post.getSports(), post.getUser());
         PartnerPostResponseDto partnerPostResponseDto = new PartnerPostResponseDto(post, skilled);
