@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,11 +53,8 @@ public class PartnerPostRequestDto {
 
     private String status;
 
-    public Post toPostEntity(User user) {
-        Sports sports = new Sports();
-        sports.setName(sportsName);
-        Location location = new Location();
-        location.setSiDo(siDo); location.setSiGunGu(siGunGu); location.setEupMyunDongLi(eupMyunDongLi);
+    public Post toPostEntity(User user,Sports sports, Location location) {
+        //setter 사용을 지양하기 위해 빌더 패턴 사용
 
         return Post.builder()
                 .user(user)

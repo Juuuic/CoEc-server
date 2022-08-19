@@ -17,21 +17,23 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
     @Query(value = "SELECT * FROM Post p WHERE p.division != 'PARTENER' and status != 'DELETED' order by p.updatedAt desc", nativeQuery = true)
-    public List<Post> findMentoringPostsAll();
+    List<Post> findMentoringPostsAll();
+
 
     @Query(value = "SELECT p FROM Post p WHERE p.id = :postId and p.division != 'PARTENER' and p.status != 'DELETED'", nativeQuery = true)
-    public Post findMentoringPostById(@Param("postId") Long postId);
+    Post findMentoringPostById(@Param("postId") Long postId);
+
 
     @Query(value = "SELECT i FROM Interest i WHERE i.post.id = :postId")
-    public List<Interest> findInterestByPostId(@Param("postId") Long id);
+    List<Interest> findInterestByPostId(@Param("postId") Long id);
     
     // 페이징하려면 아예 새로 만들어 할 수도
     @Query(nativeQuery = true, value = "select * from Post p where p.status != 'DELETED' and p.division = 'PARTNER' order by p.updatedAt desc limit 9")
-    public List<Post> findPartnerPosts();
+    List<Post> findPartnerPosts();
 
     @Query("select p from Post p where p.id = :postId and p.status != 'DELETED' and p.division = 'PARTNER'")
-    public Post findPartnerPost(@Param("postId") Long postId);
+    Post findPartnerPost(@Param("postId") Long postId);
 
     @Query("select p from Post p where p.id = :postId and p.status = 'ACTIVE'")
-    public Post findJoinablePost(@Param("postId")Long postId);
+    Post findJoinablePost(@Param("postId")Long postId);
 }
