@@ -19,7 +19,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "SELECT * FROM Post p WHERE p.division != 'PARTENER' and status != 'DELETED' order by p.updatedAt desc", nativeQuery = true)
     List<Post> findMentoringPostsAll();
 
-    Post findMentoringPostById(Long id);
+
+    @Query(value = "SELECT p FROM Post p WHERE p.id = :postId and p.division != 'PARTENER' and p.status != 'DELETED'", nativeQuery = true)
+    Post findMentoringPostById(@Param("postId") Long postId);
+
 
     @Query(value = "SELECT i FROM Interest i WHERE i.post.id = :postId")
     List<Interest> findInterestByPostId(@Param("postId") Long id);
